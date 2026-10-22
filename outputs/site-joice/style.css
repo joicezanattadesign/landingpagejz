@@ -223,18 +223,18 @@ footer strong { font-weight:800; }
   .navigation>a:not(.nav-whatsapp){min-height:44px;padding:10px 4px}
   .nav-whatsapp{width:44px;height:44px;margin-top:4px}
   .nav-whatsapp>.vector{width:58px;margin:-7px}
-  .hero-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);column-gap:14px;row-gap:16px;height:auto;padding-top:36px;padding-bottom:30px}
+  .hero-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);column-gap:12px;row-gap:16px;height:auto;padding-top:36px;padding-bottom:30px}
   .hero-copy{display:contents}
-  .hero-copy h1{order:1;grid-column:1/-1;grid-row:1;width:100%;max-width:540px;margin:0;font-size:clamp(24px,6.8vw,30px);line-height:1.2;text-wrap:balance}
-  .hero-art{order:2;grid-column:2;grid-row:2;position:relative;inset:auto;justify-self:end;align-self:center;width:min(100%,170px);height:auto;aspect-ratio:736/914;margin:0}
+  .hero-copy h1{order:1;grid-column:1;grid-row:1;width:100%;max-width:540px;margin:0;font-size:clamp(21px,5.5vw,25px);line-height:1.2;text-wrap:balance}
+  .hero-art{order:2;grid-column:2;grid-row:1/4;position:relative;inset:auto;justify-self:end;align-self:center;width:min(100%,170px);height:auto;aspect-ratio:736/914;margin:0}
   .hero-portrait{width:100%;height:100%;object-fit:contain}
   .hero-copy p{order:3;grid-column:1;grid-row:2;width:100%;max-width:540px;margin:0;font-size:14px;line-height:1.55}
-  .hero-copy .button{order:4;grid-column:1/-1;grid-row:3;justify-self:start;margin:2px 0 0;min-width:0}
+  .hero-copy .button{order:4;grid-column:1;grid-row:3;justify-self:start;max-width:100%;margin:2px 0 0;min-width:0;padding-inline:16px;font-size:11px}
   .floating-icon{width:30px;height:30px;border-radius:9px}
   .floating-icon img{width:18px;height:18px}
   .internet{top:8.53%;left:17.4%}.shopping{top:25.4%;right:0}
   .hero-ghost{top:40px;left:-180px;width:400px;height:640px;opacity:.1}
-  .hero-signature{top:auto;bottom:58px;left:43%;font-size:60px;z-index:1}
+  .hero-signature{top:auto;bottom:58px;left:55%;font-size:60px;z-index:1}
   .clarity{padding:34px 0 28px}
   .clarity h2{max-width:340px;margin:0 auto 22px;text-align:left}
   .clarity-backdrop{width:1400px;left:calc(50% - 840px);top:-40px}
@@ -344,7 +344,7 @@ footer strong { font-weight:800; }
 @media(max-width:359px){
   .container{width:calc(100% - 32px)}
   .header{padding:12px;gap:6px}.brand{font-size:20px;gap:8px}.brand-symbol{width:28px}
-  .menu-toggle{font-size:12px;gap:6px}.hero-copy h1{font-size:24px}
+  .menu-toggle{font-size:12px;gap:6px}.hero-copy h1{font-size:21px}
   .hero-art{width:100%}
   .service-card,.service-card.social{padding:18px}
   .service-heading h3,.service-card.social h3{font-size:19px}

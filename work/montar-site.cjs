@@ -59,7 +59,7 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
   <script src="app.js?v=12" defer></script>
 </head>
 <body>
