@@ -51,6 +51,8 @@ const html = `<!doctype html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <meta name="supported-color-schemes" content="light">
   <meta name="theme-color" content="#302c1e">
   <title>Joice Zanatta — Sites, landing pages e design</title>
   <meta name="description" content="Sites, landing pages e design para redes sociais. Comunicação clara e uma presença digital coerente com o seu negócio. Conheça o trabalho de Joice Zanatta.">
@@ -59,8 +61,8 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=13">
-  <script src="app.js?v=12" defer></script>
+  <link rel="stylesheet" href="style.css?v=14">
+  <script src="app.js?v=14" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -96,7 +98,7 @@ const html = `<!doctype html>
   </section>
 
   <section class="clarity" aria-labelledby="clarity-title">
-    ${vector('45c71.svg','dot-grid')}${vector('691f8.svg','clarity-backdrop')}
+    ${vector('45c71.svg','dot-grid')}${vector('05678.svg','clarity-backdrop')}
     <div class="container section-content">
       <h2 id="clarity-title">Um bom trabalho não deveria ser difícil de entender</h2>
       <div class="clarity-cards">
@@ -111,7 +113,7 @@ const html = `<!doctype html>
   <div class="ribbons double" aria-hidden="true"><div class="ribbon tilted">${band}</div><div class="ribbon white">${band}</div></div>
 
   <section class="testimonials" id="depoimentos" aria-labelledby="testimonials-title">
-    <div class="testimonial-decoration" aria-hidden="true">${vector('126da.svg','review-wave back')}${vector('1815e.svg','review-wave front')}</div>
+    <div class="testimonial-decoration" aria-hidden="true">${vector('8c3d8.svg','review-wave back')}${vector('1815e.svg','review-wave front')}</div>
     <div class="review-heading container">
       ${rating()}
       <h2 id="testimonials-title">Quem já passou por aqui, conta como foi</h2>
@@ -147,8 +149,10 @@ const html = `<!doctype html>
   <section class="process" id="processo" aria-labelledby="process-title">
     <div class="container process-layout">
       <div class="process-copy">
+        <div class="process-intro">
         <h2 id="process-title">Meus processos</h2>
-        <div class="process-description"><p>Você acompanha cada etapa do projeto, com clareza sobre o que será feito, os prazos e os momentos de aprovação.</p>
+        <p>Você acompanha cada etapa do projeto, com clareza sobre o que será feito, os prazos e os momentos de aprovação.</p></div>
+        <div class="process-description">
         <ol class="process-steps">${steps.map(([title,text])=>`<li><h3>${title}</h3><p>${text}</p></li>`).join('')}</ol></div>
         ${cta('Quero um projeto para meu negócio')}
       </div>
@@ -157,7 +161,7 @@ const html = `<!doctype html>
   </section>
 
   <section class="about" id="sobre" aria-labelledby="about-title">
-    ${vector('29cc5.svg','about-backdrop')}
+    ${vector('1de05.svg','about-backdrop')}
     <img class="about-texture" src="assets/222ae.png" alt="" loading="lazy" width="2000" height="1109">
     <div class="container about-layout">
       <div class="about-art"><img class="about-portrait" src="assets/48ee7.png" alt="Joice Zanatta com camisa clara, apoiada em uma mesa" loading="lazy" width="604" height="906"></div>
@@ -181,7 +185,8 @@ const html = `<!doctype html>
 </body></html>`;
 // Smaller derivatives use the same photographs and textures; desktop retains originals.
 const responsiveHtml = html.replace(/<img\b[^>]*src="assets\/(e2bc7|c4efa|48ee7|5c77c|222ae|7484e)\.png"[^>]*>/g,
-  (img,asset)=>`<picture class="responsive-media"><source media="(max-width:1023px)" srcset="assets/mobile/${asset}.webp">${img}</picture>`);
+  (img,asset)=>`<picture class="responsive-media"><source media="(max-width:1023.98px)" srcset="assets/mobile/${asset}.webp">${img}</picture>`);
 fs.writeFileSync(path.join(root,'index.html'),responsiveHtml);
+fs.writeFileSync(path.join(root,'app.js'),fs.readFileSync('work/app-base.js','utf8')+fs.readFileSync('work/carrossel.js','utf8'));
 fs.writeFileSync('work/figma-vector-dimensions.json',JSON.stringify(dimensions,null,2));
 console.log('Página montada conforme a revisão atual do Figma.');

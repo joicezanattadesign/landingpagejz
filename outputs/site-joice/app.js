@@ -41,6 +41,29 @@ faqItems.forEach(item => item.addEventListener('toggle', () => {
   if (item.open) faqItems.forEach(other => { if (other !== item) other.open = false; });
 }));
 
+// Place the full-width fade using the current portrait, rather than a fixed section height.
+// Figma: portrait y=7187, h=906; fade y=7770, h=441, with the original gradient stops.
+const aboutSection = document.querySelector('.about');
+const aboutPortrait = document.querySelector('.about-art');
+let aboutFadeFrame = 0;
+function updateAboutFade() {
+  cancelAnimationFrame(aboutFadeFrame);
+  aboutFadeFrame = requestAnimationFrame(() => {
+    if (window.matchMedia('(min-width:1024px)').matches) return;
+    const section = aboutSection.getBoundingClientRect();
+    const portrait = aboutPortrait.getBoundingClientRect();
+    aboutSection.style.setProperty('--about-fade-top', `${portrait.top - section.top + portrait.height * 583 / 906}px`);
+    aboutSection.style.setProperty('--about-fade-height', `${portrait.height * 441 / 906}px`);
+  });
+}
+const aboutLayoutObserver = new ResizeObserver(updateAboutFade);
+aboutLayoutObserver.observe(document.querySelector('.about-layout'));
+aboutLayoutObserver.observe(aboutPortrait);
+document.fonts.ready.then(updateAboutFade);
+window.addEventListener('resize', updateAboutFade, {passive:true});
+window.addEventListener('load', updateAboutFade, {once:true});
+updateAboutFade();
+
 const reviews = document.querySelector('.reviews');
 const cards = [...document.querySelectorAll('.review-card')];
 const dots = [...document.querySelectorAll('.review-dot')];
@@ -128,7 +151,7 @@ function sizeReviewEdges(initial = false) {
   const end = compact ? 20 : Math.max(0, (viewportWidth - cards[cards.length - 1].offsetWidth) / 2);
   reviews.style.setProperty('--edge-start', `${start}px`);
   reviews.style.setProperty('--edge-end', `${end}px`);
-  if (initial && window.innerWidth > 1023) {
+  if (initial && window.matchMedia('(min-width:1024px)').matches) {
     reviews.scrollTo({left:start + 1414 * document.documentElement.clientWidth / 1920, behavior:'instant'});
   } else goToReview(initial ? 0 : currentReview, 'instant');
 }

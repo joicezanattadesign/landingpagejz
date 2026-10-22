@@ -16,6 +16,7 @@
 !/work/preparar-mobile.py
 !/work/consolidar-layout.cjs
 !/work/carrossel.js
+!/work/app-base.js
 !/work/figma-assets-atualizados.json
 
 # Credenciais e dependências nunca devem ser enviadas.

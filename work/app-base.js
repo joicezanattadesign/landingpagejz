@@ -1,0 +1,66 @@
+// The 1920 px design uses one shared unit throughout the whole page.
+function updateDesignUnit() {
+  document.documentElement.style.setProperty('--design-unit', `${document.documentElement.clientWidth / 1920}px`);
+}
+updateDesignUnit();
+window.addEventListener('resize', updateDesignUnit, {passive:true});
+
+// SVGs keep their original dimensions; only the containing layer is scaled.
+const vectorObserver = new ResizeObserver(entries => {
+  for (const {target,contentRect} of entries) {
+    const originalWidth = Number(target.style.getPropertyValue('--vw'));
+    target.style.setProperty('--scale', contentRect.width / originalWidth);
+  }
+});
+document.querySelectorAll('.vector').forEach(element => vectorObserver.observe(element));
+
+const header = document.querySelector('.header');
+const menuButton = document.querySelector('.menu-toggle');
+function closeMenu() {
+  header.classList.remove('menu-open');
+  menuButton.setAttribute('aria-expanded', 'false');
+}
+menuButton.addEventListener('click', () => {
+  const open = header.classList.toggle('menu-open');
+  menuButton.setAttribute('aria-expanded', String(open));
+});
+document.querySelectorAll('.navigation a').forEach(link => link.addEventListener('click', closeMenu));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && header.classList.contains('menu-open')) {
+    closeMenu();
+    menuButton.focus();
+  }
+});
+document.addEventListener('click', event => {
+  if (!header.contains(event.target)) closeMenu();
+});
+window.matchMedia('(min-width: 1024px)').addEventListener('change', closeMenu);
+
+const faqItems = [...document.querySelectorAll('.faq-item')];
+faqItems.forEach(item => item.addEventListener('toggle', () => {
+  if (item.open) faqItems.forEach(other => { if (other !== item) other.open = false; });
+}));
+
+// Place the full-width fade using the current portrait, rather than a fixed section height.
+// Figma: portrait y=7187, h=906; fade y=7770, h=441, with the original gradient stops.
+const aboutSection = document.querySelector('.about');
+const aboutPortrait = document.querySelector('.about-art');
+let aboutFadeFrame = 0;
+function updateAboutFade() {
+  cancelAnimationFrame(aboutFadeFrame);
+  aboutFadeFrame = requestAnimationFrame(() => {
+    if (window.matchMedia('(min-width:1024px)').matches) return;
+    const section = aboutSection.getBoundingClientRect();
+    const portrait = aboutPortrait.getBoundingClientRect();
+    aboutSection.style.setProperty('--about-fade-top', `${portrait.top - section.top + portrait.height * 583 / 906}px`);
+    aboutSection.style.setProperty('--about-fade-height', `${portrait.height * 441 / 906}px`);
+  });
+}
+const aboutLayoutObserver = new ResizeObserver(updateAboutFade);
+aboutLayoutObserver.observe(document.querySelector('.about-layout'));
+aboutLayoutObserver.observe(aboutPortrait);
+document.fonts.ready.then(updateAboutFade);
+window.addEventListener('resize', updateAboutFade, {passive:true});
+window.addEventListener('load', updateAboutFade, {once:true});
+updateAboutFade();
+
