@@ -12,6 +12,8 @@
 !/work/montar-site.cjs
 !/work/layout-desktop.css
 !/work/layout-mobile-original.css
+!/work/layout-mobile.css
+!/work/preparar-mobile.py
 !/work/consolidar-layout.cjs
 !/work/carrossel.js
 !/work/figma-assets-atualizados.json

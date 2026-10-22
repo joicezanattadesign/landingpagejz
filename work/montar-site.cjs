@@ -59,8 +59,8 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=9">
-  <script src="app.js?v=8" defer></script>
+  <link rel="stylesheet" href="style.css?v=10">
+  <script src="app.js?v=10" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -177,6 +177,9 @@ const html = `<!doctype html>
 </main>
 <footer><p>© 2026 <strong>Joice Zanatta.</strong> Todos os direitos reservados.</p><div class="footer-band"></div></footer>
 </body></html>`;
-fs.writeFileSync(path.join(root,'index.html'),html);
+// Smaller derivatives use the same photographs and textures; desktop retains originals.
+const responsiveHtml = html.replace(/<img\b[^>]*src="assets\/(e2bc7|c4efa|48ee7|5c77c|222ae|7484e)\.png"[^>]*>/g,
+  (img,asset)=>`<picture class="responsive-media"><source media="(max-width:1023px)" srcset="assets/mobile/${asset}.webp">${img}</picture>`);
+fs.writeFileSync(path.join(root,'index.html'),responsiveHtml);
 fs.writeFileSync('work/figma-vector-dimensions.json',JSON.stringify(dimensions,null,2));
 console.log('Página montada conforme a revisão atual do Figma.');

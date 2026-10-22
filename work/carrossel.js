@@ -79,7 +79,7 @@ function sizeReviewEdges(initial = false) {
   const end = Math.max(0, (viewportWidth - cards[cards.length - 1].offsetWidth) / 2);
   reviews.style.setProperty('--edge-start', `${start}px`);
   reviews.style.setProperty('--edge-end', `${end}px`);
-  if (initial && window.innerWidth > 760) {
+  if (initial && window.innerWidth > 1023) {
     reviews.scrollTo({left:start + 1414 * document.documentElement.clientWidth / 1920, behavior:'instant'});
   } else goToReview(initial ? 0 : currentReview, 'instant');
 }

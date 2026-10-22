@@ -12,8 +12,9 @@ Para visualizar, abra `outputs/site-joice/index.html` no navegador ou sirva essa
 
 - `work/montar-site.cjs`: gera o HTML.
 - `work/layout-desktop.css`: estilos do modelo de 1920 unidades.
-- `work/layout-mobile-original.css` e `work/consolidar-layout.cjs`: ajustes de escala e celular; geram o CSS final.
+- `work/layout-mobile.css` e `work/consolidar-layout.cjs`: layout de celular/tablet até 1023 px e geração do CSS final. `layout-mobile-original.css` guarda apenas as regras antigas.
 - `work/carrossel.js`: comportamento dos depoimentos. Manter sincronizado com a parte final de `outputs/site-joice/app.js`.
+- `work/preparar-mobile.py`: gera versões WebP menores das fotos e texturas para celular, com Python e Pillow. Os originais permanecem disponíveis para computador.
 
 Para reconstruir HTML e CSS, execute na raiz do repositório, com Node.js instalado:
 

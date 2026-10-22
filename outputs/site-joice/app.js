@@ -34,7 +34,7 @@ document.addEventListener('keydown', event => {
 document.addEventListener('click', event => {
   if (!header.contains(event.target)) closeMenu();
 });
-window.matchMedia('(min-width: 761px)').addEventListener('change', closeMenu);
+window.matchMedia('(min-width: 1024px)').addEventListener('change', closeMenu);
 
 const faqItems = [...document.querySelectorAll('.faq-item')];
 faqItems.forEach(item => item.addEventListener('toggle', () => {
@@ -122,7 +122,7 @@ function sizeReviewEdges(initial = false) {
   const end = Math.max(0, (viewportWidth - cards[cards.length - 1].offsetWidth) / 2);
   reviews.style.setProperty('--edge-start', `${start}px`);
   reviews.style.setProperty('--edge-end', `${end}px`);
-  if (initial && window.innerWidth > 760) {
+  if (initial && window.innerWidth > 1023) {
     reviews.scrollTo({left:start + 1414 * document.documentElement.clientWidth / 1920, behavior:'instant'});
   } else goToReview(initial ? 0 : currentReview, 'instant');
 }
