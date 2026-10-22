@@ -1,0 +1,27 @@
+PRÉVIA LOCAL — JOICE ZANATTA
+
+Esta pasta contém a primeira versão funcional da página desenhada no Figma.
+Todas as dobras foram revisadas com uma escala única baseada no modelo de 1920 px,
+incluindo margens, títulos, imagens, cartões e transições até o rodapé.
+Abra index.html no navegador para visualizar. As fontes estão incluídas na pasta assets/fonts.
+
+Já funciona:
+• Layout para computador e celular.
+• Menu e perguntas frequentes.
+• Depoimentos com setas, indicadores, teclado e arraste lateral.
+• Botões de orçamento para o WhatsApp (51) 99416-9356.
+• Projetos abre https://www.behance.net/joicezanatta.
+
+Para revisar antes de colocar no ar:
+• O primeiro bloco agora se chama “Meus processos”, conforme a atualização do Figma.
+• O segundo bloco “Quem faz” apresenta a profissional.
+• As duas transições têm uma faixa bege inclinada e outra branca abaixo.
+• Os depoimentos usam os oito prints da atualização do Figma, com navegação funcional.
+• Os fundos e os recortes também acompanham essa atualização.
+• A resposta “Os projetos são personalizados?” foi aprovada por Joice em 22/10/2026.
+• As respostas sobre textos e publicação seguem as orientações dadas por Joice nesta conversa.
+• As demais respostas do FAQ foram sugeridas nesta prévia e precisam da sua revisão.
+• O endereço do Behance foi atualizado conforme sua última mensagem.
+
+Ainda não publicado. A etapa de hospedagem pode ser feita depois da sua revisão.
+O bloqueio de indexação desta prévia deve ser removido somente na versão final.

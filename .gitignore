@@ -1,0 +1,23 @@
+# Arquivos locais e referências de trabalho não fazem parte do site.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/AGENTS.md
+!/outputs/
+/outputs/*
+!/outputs/site-joice/
+!/work/
+/work/*
+!/work/montar-site.cjs
+!/work/layout-desktop.css
+!/work/layout-mobile-original.css
+!/work/consolidar-layout.cjs
+!/work/carrossel.js
+!/work/figma-assets-atualizados.json
+
+# Credenciais e dependências nunca devem ser enviadas.
+**/.env
+**/.env.*
+**/node_modules/
+**/.DS_Store
