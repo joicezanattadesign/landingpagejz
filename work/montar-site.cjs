@@ -51,7 +51,6 @@ const html = `<!doctype html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#302c1e">
   <title>Joice Zanatta — Sites, landing pages e design</title>
   <meta name="description" content="Sites, landing pages e design para redes sociais. Comunicação clara e uma presença digital coerente com o seu negócio. Conheça o trabalho de Joice Zanatta.">

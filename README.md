@@ -24,9 +24,11 @@ node work/consolidar-layout.cjs
 
 Os arquivos prontos já estão incluídos. A hospedagem pode publicar diretamente `outputs/site-joice`, sem executar esses comandos.
 
-## Antes da publicação
+## Hospedagem
 
-Esta versão mantém o bloqueio de indexação da prévia (`noindex,nofollow`). Remover esse bloqueio no gerador do HTML e reconstruir a página quando a publicação final for autorizada. O envio ao GitHub não configura hospedagem.
+Na Vercel, configure **Root Directory** como `outputs/site-joice` e **Framework Preset** como `Other`. O site é estático e não precisa de comando de build. Após alterar essa configuração, faça uma nova publicação para que ela seja aplicada.
+
+O bloqueio de indexação da prévia foi removido da versão publicada e do gerador do HTML.
 
 WhatsApp: https://wa.me/5551994169356
 

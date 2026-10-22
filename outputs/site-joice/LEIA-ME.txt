@@ -23,5 +23,5 @@ Para revisar antes de colocar no ar:
 • As demais respostas do FAQ foram sugeridas nesta prévia e precisam da sua revisão.
 • O endereço do Behance foi atualizado conforme sua última mensagem.
 
-Ainda não publicado. A etapa de hospedagem pode ser feita depois da sua revisão.
-O bloqueio de indexação desta prévia deve ser removido somente na versão final.
+Na Vercel, a pasta raiz (Root Directory) deve ser outputs/site-joice, com o modelo Other.
+O bloqueio de indexação da prévia foi removido da versão publicada e do gerador do HTML.
