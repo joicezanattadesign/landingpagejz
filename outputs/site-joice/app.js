@@ -81,7 +81,7 @@ updateContactBackground();
 
 const reviews = document.querySelector('.reviews');
 const cards = [...document.querySelectorAll('.review-card')];
-const dots = [...document.querySelectorAll('.review-dot')];
+const reviewScrubber = document.querySelector('.review-scrubber');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const previousReview = document.querySelector('.review-arrow.previous');
 const nextReview = document.querySelector('.review-arrow.next');
@@ -109,10 +109,8 @@ reviews.addEventListener('scroll', updateReviewHeight, {passive:true});
 
 function showReviewState(index) {
   currentReview = index;
-  dots.forEach((dot,i) => {
-    dot.classList.toggle('active', i === index);
-    dot.setAttribute('aria-pressed', String(i === index));
-  });
+  reviewScrubber.value = String(index);
+  reviewScrubber.setAttribute('aria-valuetext', `Depoimento ${index + 1} de ${cards.length}`);
   previousReview.disabled = index === 0;
   nextReview.disabled = index === cards.length - 1;
   reviewStatus.textContent = `Depoimento ${index + 1} de ${cards.length}`;
@@ -125,7 +123,7 @@ function goToReview(index, behavior = reducedMotion.matches ? 'instant' : 'smoot
   const left = cards[target].offsetLeft - (reviews.clientWidth - cards[target].offsetWidth) / 2;
   reviews.scrollTo({left, behavior});
 }
-dots.forEach((dot,index) => dot.addEventListener('click', () => goToReview(index)));
+reviewScrubber.addEventListener('input', () => goToReview(Number(reviewScrubber.value), 'instant'));
 previousReview.addEventListener('click', () => goToReview(currentReview - 1));
 nextReview.addEventListener('click', () => goToReview(currentReview + 1));
 reviews.addEventListener('keydown', event => {

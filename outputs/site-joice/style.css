@@ -81,17 +81,27 @@ a,button,summary { -webkit-tap-highlight-color:transparent; touch-action:manipul
 .print-plain { border-radius:0; box-shadow:none; }
 .reviews { cursor:grab; user-select:none; padding-inline:var(--edge-start,calc(0 * var(--u))) var(--edge-end,calc(0 * var(--u))); }
 .reviews.is-dragging { cursor:grabbing; scroll-snap-type:none; }
-.review-controls { position:relative; z-index:3; display:flex; align-items:center; justify-content:center; gap:.625rem; width:max-content; max-width:calc(100% - 3rem); min-height:3.75rem; margin:.75rem auto 0; padding:.1875rem .625rem; border:.0625rem solid #c0bb9d80; border-radius:4rem; background:#fdfdfdf2; box-shadow:0 .375rem 1.5rem #302c1e0a; }
-.review-pagination { display:flex; align-items:center; }
-.review-dot { position:relative; flex-shrink:0; width:1.75rem; height:2.75rem; padding:0; border:0; background:transparent; cursor:pointer; }
-.review-dot:before { content:''; position:absolute; top:50%; left:50%; width:.625rem; height:.625rem; transform:translate(-50%,-50%); border-radius:50%; background:var(--sand); box-shadow:inset 0 0 0 .0625rem var(--caramel); }
-.review-dot.active:before { width:1.25rem; background:var(--caramel); border-radius:1rem; outline:.125rem solid var(--caramel); outline-offset:.125rem; }
-.review-arrow { display:flex; align-items:center; justify-content:center; gap:.625rem; flex-shrink:0; min-width:8rem; height:3.25rem; padding:0 .875rem; border:.0625rem solid var(--caramel); border-radius:2rem; color:var(--caramel); background:var(--paper); cursor:pointer; font:700 1rem/1 var(--body); }
-.review-arrow.next { background:var(--caramel); color:var(--paper); }
+/* A quiet scrollbar with an actual draggable handle; native range keeps keyboard support. */
+.review-controls { position:relative; z-index:3; display:flex; align-items:center; gap:1.25rem; width:30rem; max-width:calc(100% - 3rem); min-height:3.75rem; margin:.75rem auto 0; }
+.review-count { flex:0 0 3rem; font:500 .875rem/1 var(--body); font-variant-numeric:tabular-nums; color:var(--ink); white-space:nowrap; }
+.review-scrubber { appearance:none; -webkit-appearance:none; flex:1; width:100%; min-width:0; height:2.75rem; margin:0; padding:0; border:0; border-radius:0; background:transparent; cursor:ew-resize; touch-action:pan-y; }
+.review-scrubber::-webkit-slider-runnable-track { height:.125rem; background:#c0bb9d99; }
+.review-scrubber::-moz-range-track { height:.125rem; background:#c0bb9d99; }
+.review-scrubber::-moz-range-progress { height:.125rem; background:#c0bb9d99; }
+.review-scrubber::-webkit-slider-thumb { appearance:none; -webkit-appearance:none; width:2.5rem; height:.375rem; margin-top:-.125rem; border:0; border-radius:0; background:var(--ink); }
+.review-scrubber::-moz-range-thumb { width:2.5rem; height:.375rem; border:0; border-radius:0; background:var(--ink); }
+.review-scrubber:hover::-webkit-slider-thumb { background:var(--caramel); }
+.review-scrubber:hover::-moz-range-thumb { background:var(--caramel); }
+.review-scrubber:focus-visible { outline:none; }
+.review-scrubber:focus-visible::-webkit-slider-runnable-track { background:var(--caramel); }
+.review-scrubber:focus-visible::-moz-range-track,.review-scrubber:focus-visible::-moz-range-progress { background:var(--caramel); }
+.review-scrubber:focus-visible::-webkit-slider-thumb { height:.625rem; margin-top:-.25rem; background:var(--caramel); }
+.review-scrubber:focus-visible::-moz-range-thumb { height:.625rem; background:var(--caramel); }
+.review-arrows { display:flex; flex-shrink:0; gap:.25rem; }
+.review-arrow { display:flex; align-items:center; justify-content:center; flex-shrink:0; width:2.75rem; height:2.75rem; padding:0; border:0; border-radius:0; color:var(--ink); background:transparent; cursor:pointer; }
 .review-arrow-symbol { font:400 1.75rem/1 var(--body); }
-.review-count { min-width:3rem; font:600 .875rem/1 var(--body); font-variant-numeric:tabular-nums; color:var(--caramel); text-align:center; white-space:nowrap; }
-.review-arrow:hover { background:var(--caramel); color:var(--paper); }
-.review-arrow:disabled { opacity:.35; cursor:default; background:var(--paper); color:var(--caramel); }
+.review-arrow:hover { color:var(--caramel); }
+.review-arrow:disabled { opacity:.25; cursor:default; }
 .review-status { position:absolute; width:calc(1 * var(--u)); height:calc(1 * var(--u)); overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 .review-enlarge { position:absolute; inset:0; width:100%; height:100%; border:0; background:transparent; cursor:zoom-in; }
 .review-enlarge:focus-visible { outline-offset:calc(-5 * var(--u)); border-radius:inherit; }
@@ -261,15 +271,14 @@ footer strong { font-weight:800; }
   .reviews{align-items:center;gap:12px;height:var(--review-height,163px);min-height:0;margin-top:0;padding:12px var(--edge-end,20px) 12px var(--edge-start,20px);touch-action:auto}
   .print-card{flex:0 0 min(64vw,calc(var(--rw) * .42px));width:min(64vw,calc(var(--rw) * .42px));height:auto;min-height:0;padding:0;border-radius:16px}
   .print-plain{border-radius:0;box-shadow:none}
-  .review-controls{width:min(calc(100% - 40px),300px);max-width:none;height:44px;min-height:0;gap:0;margin:14px auto 0;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
-  .review-pagination{flex:1;min-width:0}
-  .review-dot{flex:1 1 0;min-width:20px;width:auto;height:44px}
-  .review-dot.active:before{width:.625rem;border-radius:50%}
-  .review-arrow{width:44px;height:44px;min-width:0;padding:0;border-radius:50%}
-  .review-arrow.next{background:var(--paper);color:var(--caramel)}
+  .review-controls{width:min(calc(100% - 40px),360px);max-width:none;height:44px;min-height:0;gap:12px;margin:14px auto 0}
+  .review-count{flex-basis:36px;font-size:12px}
+  .review-scrubber{height:44px}
+  .review-scrubber::-webkit-slider-thumb{width:32px}
+  .review-scrubber::-moz-range-thumb{width:32px}
+  .review-arrows{gap:0}
+  .review-arrow{width:44px;height:44px}
   .review-arrow-symbol{font-size:24px}
-  .review-arrow-label,.review-count{display:none}
-  .review-arrow.previous{margin-right:6px}.review-arrow.next{margin-left:6px}
   .review-hint{display:block;margin-top:8px;font-size:12px}
   .review-lightbox{padding:14px}.review-lightbox-toolbar{top:-14px}
   .testimonial-decoration{bottom:116px}
