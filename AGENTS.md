@@ -14,6 +14,8 @@
 - Personalização considera necessidades, objetivos, estilo, preferências visuais e tom de voz. Não enumere tipos de tom de voz na resposta.
 - Criação dos textos pode ser incluída conforme a necessidade avaliada no planejamento. Joice não publica posts nem faz gerenciamento de redes sociais; entrega conteúdos finalizados em PNG ou JPG.
 - Menu vigente: Serviços, Projetos, Depoimentos, Processo, Sobre mim, Dúvidas. Projetos abre o Behance em nova aba. Os demais itens levam às respectivas seções, com Processo antes de Sobre mim.
+- A barra principal fica fixa no topo durante a rolagem, em computador, tablet e celular. Preserve a posição original da abertura com um espaço reservado da mesma altura; os links internos deixam os títulos abaixo da barra. Em telas baixas, o menu aberto permite rolagem para acessar todas as opções.
+- Na faixa de tablet (600 a 1023 px), a segunda dobra mantém três cartões largos empilhados, com título e texto alternados, e o título afastado da transição decorativa. Em Processo, o texto fica contínuo à esquerda com título e introdução agrupados, e a foto proporcional à direita; não usar três cartões estreitos lado a lado.
 - WhatsApp: https://wa.me/5551994169356. Portfólio: https://www.behance.net/joicezanatta.
 - Trabalhe na prévia local. Não publique sem solicitação da cliente.
 

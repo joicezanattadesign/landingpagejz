@@ -63,14 +63,11 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/Manrope-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=18">
-  <script src="app.js?v=18" defer></script>
+  <link rel="stylesheet" href="style.css?v=20">
+  <script src="app.js?v=20" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-<main id="conteudo">
-  <section class="hero" id="inicio" aria-labelledby="hero-title">
-    <div class="hero-ghost" aria-hidden="true"><img src="assets/5c77c.png" alt=""></div>
     <header class="header container">
       <a class="brand" href="#inicio" aria-label="Joice Zanatta — início">${vector('f025f.svg','brand-symbol')}<span>Joice Zanatta</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation"><span>Menu</span><span class="menu-bars" aria-hidden="true"></span></button>
@@ -84,6 +81,10 @@ const html = `<!doctype html>
         <a class="nav-whatsapp" href="${wa}" target="_blank" rel="noopener noreferrer" aria-label="Conversar com Joice pelo WhatsApp">${vector('b1089.svg')}</a>
       </nav>
     </header>
+<main id="conteudo">
+  <section class="hero" id="inicio" aria-labelledby="hero-title">
+    <div class="hero-ghost" aria-hidden="true"><img src="assets/5c77c.png" alt=""></div>
+    <div class="header-space" aria-hidden="true"></div>
     <div class="hero-layout container">
       <div class="hero-copy">
         <h1 id="hero-title">Seu trabalho é bom. Sua <strong>presença digital</strong> precisa mostrar isso.</h1>

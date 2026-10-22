@@ -44,7 +44,7 @@ const html=fs.readFileSync('outputs/site-joice/index.html','utf8');
 assert(html.indexOf('name="color-scheme"')<html.indexOf('rel="stylesheet"'));
 assert(html.includes('name="darkreader-lock"'));
 assert(html.includes('id="tema-inicial"'));
-assert(html.includes('style.css?v=18'));
+assert(/style\.css\?v=\d+/.test(html));
 const fixture=`<script>
 // QA only: feature absence is confined to this local, untracked document.
 window.ResizeObserver = undefined;

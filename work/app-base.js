@@ -14,6 +14,13 @@ const vectorObserver = watchElementSizes(document.querySelectorAll('.vector'), e
 });
 
 const header = document.querySelector('.header');
+// Reserve the original header height, and keep anchor targets below the fixed bar.
+function updateHeaderHeight() {
+  document.documentElement.style.setProperty('--header-height', `${header.getBoundingClientRect().height}px`);
+}
+watchElementSizes([header], updateHeaderHeight);
+afterLocalFonts(updateHeaderHeight);
+updateHeaderHeight();
 const menuButton = document.querySelector('.menu-toggle');
 function closeMenu() {
   header.classList.remove('menu-open');
