@@ -5,12 +5,15 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const previousReview = document.querySelector('.review-arrow.previous');
 const nextReview = document.querySelector('.review-arrow.next');
 const reviewStatus = document.querySelector('.review-status');
+const reviewCount = document.querySelector('.review-count');
 let currentReview = 4;
 let requestedReview = null;
 let drag = null;
 let suppressReviewClick = false;
 
 function updateReviewHeight() {
+  // The row scrolls horizontally; never retain a vertical offset after a resize or gesture.
+  if (reviews.scrollTop !== 0) reviews.scrollTop = 0;
   if (window.matchMedia('(min-width:1024px)').matches) {
     reviews.style.removeProperty('--review-height');
     return;
@@ -32,6 +35,7 @@ function showReviewState(index) {
   previousReview.disabled = index === 0;
   nextReview.disabled = index === cards.length - 1;
   reviewStatus.textContent = `Depoimento ${index + 1} de ${cards.length}`;
+  reviewCount.textContent = `${String(index + 1).padStart(2,'0')} / ${String(cards.length).padStart(2,'0')}`;
 }
 function goToReview(index, behavior = reducedMotion.matches ? 'instant' : 'smooth') {
   const target = Math.max(0, Math.min(cards.length - 1, index));

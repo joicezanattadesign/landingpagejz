@@ -60,8 +60,8 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=15">
-  <script src="app.js?v=15" defer></script>
+  <link rel="stylesheet" href="style.css?v=16">
+  <script src="app.js?v=16" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -121,9 +121,10 @@ const html = `<!doctype html>
       ${reviewImages.map((r,i)=>`<article class="review-card print-card${r.plain?' print-plain':''}" role="group" aria-roledescription="slide" aria-label="${i+1} de ${reviewImages.length}" style="--rw:${r.w};--rh:${r.h};aspect-ratio:${r.w}/${r.h}"><img class="review-print" src="assets/${r.file}" alt="${r.alt}" draggable="false" loading="lazy" style="width:${r.iw};height:${r.ih};top:${r.top};"><button class="review-enlarge" type="button" data-enlarge="${i}" aria-label="Ampliar depoimento ${i+1}" aria-haspopup="dialog"></button></article>`).join('')}
     </div>
     <div class="review-controls" role="group" aria-label="Navegar pelos depoimentos">
-      <button class="review-arrow previous" type="button" aria-label="Depoimento anterior" aria-controls="review-track"><span aria-hidden="true">←</span></button>
-      ${reviewImages.map((q,i)=>`<button type="button" class="review-dot${i===4?' active':''}" aria-label="Mostrar depoimento ${i+1}" aria-controls="review-track" data-review="${i}"></button>`).join('')}
-      <button class="review-arrow next" type="button" aria-label="Próximo depoimento" aria-controls="review-track"><span aria-hidden="true">→</span></button>
+      <button class="review-arrow previous" type="button" aria-label="Depoimento anterior" aria-controls="review-track"><span class="review-arrow-symbol" aria-hidden="true">←</span><span class="review-arrow-label">Anterior</span></button>
+      <div class="review-pagination">${reviewImages.map((q,i)=>`<button type="button" class="review-dot${i===4?' active':''}" aria-label="Mostrar depoimento ${i+1}" aria-controls="review-track" data-review="${i}"></button>`).join('')}</div>
+      <span class="review-count" aria-hidden="true">01 / ${String(reviewImages.length).padStart(2,'0')}</span>
+      <button class="review-arrow next" type="button" aria-label="Próximo depoimento" aria-controls="review-track"><span class="review-arrow-label">Próximo</span><span class="review-arrow-symbol" aria-hidden="true">→</span></button>
     </div>
     <p class="review-hint">Toque em um depoimento para ampliar.</p>
     <p class="review-status" aria-live="polite" aria-atomic="true"></p>
