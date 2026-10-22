@@ -21,7 +21,8 @@
 
 - HTML: work/montar-site.cjs gera outputs/site-joice/index.html.
 - CSS: work/layout-desktop.css, work/layout-mobile.css e work/consolidar-layout.cjs geram outputs/site-joice/style.css. O layout de celular e tablet até 1023 px fica em layout-mobile.css; layout-mobile-original.css é apenas referência antiga e não entra na geração.
-- No celular, mantenha o título antes da foto e agrupe a imagem ao conteúdo da própria seção. Não devolva as fotos do processo e da apresentação ao fim de blocos longos. O menu e o carrossel usam a mesma mudança de layout em 1024 px.
+- No celular, use composição compacta com texto à esquerda e foto à direita, conforme a correção da cliente de 22/10/2026. Não separe título, foto e subtítulo em blocos grandes empilhados. Reduza os títulos, fotos, espaços e cartões em todas as dobras; botões devem ter largura proporcional ao rótulo, sem ocupar a tela inteira. Equilibre as quebras para evitar palavras isoladas. O menu e o carrossel usam a mesma mudança de layout em 1024 px.
+- No celular, mostre mais de um depoimento ou parte dos vizinhos, em escala menor. Os prints podem ser ampliados com um toque e fechados por botão ou Escape; preserve os recortes reais, setas, arraste e indicadores.
 - Carrossel: work/carrossel.js corresponde à parte final de outputs/site-joice/app.js. Mantenha ambos sincronizados.
 - Aprovações textuais: outputs/textos-aprovados.txt. Snapshot mais recente nesta revisão: work/figma-revisao8.txt. A revisão 8 ajustou somente a posição dos depoimentos; as demais seções permanecem como aprovadas.
 - Mude as fontes de geração, não apenas os arquivos gerados. Não reverta conteúdo aprovado ao reconstruir a página.

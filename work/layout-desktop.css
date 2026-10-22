@@ -91,6 +91,17 @@ a,button,summary { -webkit-tap-highlight-color:transparent; touch-action:manipul
 .review-arrow:hover { background:var(--caramel); color:var(--paper); }
 .review-arrow:disabled { opacity:.35; cursor:default; background:var(--paper); color:var(--caramel); }
 .review-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.review-enlarge { position:absolute; inset:0; width:100%; height:100%; border:0; background:transparent; cursor:zoom-in; }
+.review-enlarge:focus-visible { outline-offset:-5px; border-radius:inherit; }
+.review-hint { position:relative; z-index:3; margin:20px auto 0; text-align:center; font:400 13px/1.5 var(--body); }
+.review-lightbox { position:fixed; width:min(92vw,720px); max-width:none; max-height:90vh; max-height:90dvh; margin:auto; padding:18px; border:1px solid #e0ded1; border-radius:18px; background:var(--paper); color:var(--ink); overflow:auto; }
+.review-lightbox::backdrop { background:#17160fba; }
+.review-lightbox-toolbar { position:sticky; top:-18px; z-index:2; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; background:var(--paper); }
+.review-lightbox h2 { margin:0; font:700 17px/1.4 var(--body); letter-spacing:0; }
+.review-lightbox-close { min-height:44px; padding:8px 12px; border:1px solid var(--sand); border-radius:24px; background:white; font:600 14px/1.4 var(--body); cursor:pointer; }
+.review-lightbox-close span { margin-left:6px; font-size:20px; }
+.lightbox-print { position:relative; width:min(100%,calc(var(--rw) * 1px)); margin:auto; overflow:hidden; border-radius:12px; }
+.review-open { overflow:hidden; }
 .testimonial-decoration { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
 .review-wave { position:absolute; left:50%; width:1922px; transform:translateX(-50%); }
 .review-wave.front { top:262px; } .review-wave.back { top:440px; }

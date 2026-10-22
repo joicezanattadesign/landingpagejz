@@ -59,8 +59,8 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=11">
-  <script src="app.js?v=10" defer></script>
+  <link rel="stylesheet" href="style.css?v=12">
+  <script src="app.js?v=12" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -117,14 +117,16 @@ const html = `<!doctype html>
       <h2 id="testimonials-title">Quem já passou por aqui, conta como foi</h2>
     </div>
     <div class="reviews" id="review-track" tabindex="0" role="region" aria-roledescription="carrossel" aria-label="Depoimentos de clientes. Use as setas ou deslize para navegar.">
-      ${reviewImages.map((r,i)=>`<article class="review-card print-card${r.plain?' print-plain':''}" role="group" aria-roledescription="slide" aria-label="${i+1} de ${reviewImages.length}" style="--rw:${r.w};--rh:${r.h};aspect-ratio:${r.w}/${r.h}"><img class="review-print" src="assets/${r.file}" alt="${r.alt}" draggable="false" loading="lazy" style="width:${r.iw};height:${r.ih};top:${r.top};"></article>`).join('')}
+      ${reviewImages.map((r,i)=>`<article class="review-card print-card${r.plain?' print-plain':''}" role="group" aria-roledescription="slide" aria-label="${i+1} de ${reviewImages.length}" style="--rw:${r.w};--rh:${r.h};aspect-ratio:${r.w}/${r.h}"><img class="review-print" src="assets/${r.file}" alt="${r.alt}" draggable="false" loading="lazy" style="width:${r.iw};height:${r.ih};top:${r.top};"><button class="review-enlarge" type="button" data-enlarge="${i}" aria-label="Ampliar depoimento ${i+1}" aria-haspopup="dialog"></button></article>`).join('')}
     </div>
     <div class="review-controls" role="group" aria-label="Navegar pelos depoimentos">
       <button class="review-arrow previous" type="button" aria-label="Depoimento anterior" aria-controls="review-track"><span aria-hidden="true">←</span></button>
       ${reviewImages.map((q,i)=>`<button type="button" class="review-dot${i===4?' active':''}" aria-label="Mostrar depoimento ${i+1}" aria-controls="review-track" data-review="${i}"></button>`).join('')}
       <button class="review-arrow next" type="button" aria-label="Próximo depoimento" aria-controls="review-track"><span aria-hidden="true">→</span></button>
     </div>
+    <p class="review-hint">Toque em um depoimento para ampliar.</p>
     <p class="review-status" aria-live="polite" aria-atomic="true"></p>
+    <dialog class="review-lightbox" aria-labelledby="review-lightbox-title"><div class="review-lightbox-toolbar"><h2 id="review-lightbox-title">Depoimento</h2><button class="review-lightbox-close" type="button" autofocus>Fechar <span aria-hidden="true">×</span></button></div><div class="review-lightbox-body"></div></dialog>
   </section>
 
   <section class="services" id="servicos" aria-labelledby="services-title">
