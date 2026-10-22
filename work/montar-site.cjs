@@ -25,7 +25,6 @@ const reviewImages = [
   {file:'ad026.png',w:539,h:294,iw:'119.25%',ih:'473.37%',top:'-136.09%',alt:'Mensagem de cliente elogiando o resultado e as cores do projeto.'},
   {file:'0362a.png',w:464,h:280,iw:'109.48%',ih:'100.05%',top:'-0.02%',plain:true,alt:'Registro de uma avaliação de cliente sobre o projeto.'},
   {file:'5382a.png',w:432,h:280,iw:'100%',ih:'334.03%',top:'-44.05%',alt:'Mensagem de Raquel Rocha elogiando o trabalho de Joice e dizendo que amou.'},
-  {file:'cb037.png',w:516,h:234,iw:'100%',ih:'475.94%',top:'-364.29%',alt:'Registro de um projeto de comunicação visual apresentado no Figma.'},
   {file:'1a986.png',w:373,h:650,iw:'117.5%',ih:'145.95%',top:'-15.51%',alt:'Conversa com cliente sobre a entrega do projeto.'}
 ];
 const steps = [
@@ -61,8 +60,8 @@ const html = `<!doctype html>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=14">
-  <script src="app.js?v=14" defer></script>
+  <link rel="stylesheet" href="style.css?v=15">
+  <script src="app.js?v=15" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -98,7 +97,7 @@ const html = `<!doctype html>
   </section>
 
   <section class="clarity" aria-labelledby="clarity-title">
-    ${vector('45c71.svg','dot-grid')}${vector('05678.svg','clarity-backdrop')}
+    ${vector('45c71.svg','dot-grid')}${vector('6af65.svg','clarity-backdrop')}
     <div class="container section-content">
       <h2 id="clarity-title">Um bom trabalho não deveria ser difícil de entender</h2>
       <div class="clarity-cards">

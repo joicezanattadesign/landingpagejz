@@ -52,6 +52,7 @@ function updateAboutFade() {
     if (window.matchMedia('(min-width:1024px)').matches) return;
     const section = aboutSection.getBoundingClientRect();
     const portrait = aboutPortrait.getBoundingClientRect();
+    if (!portrait.height) return;
     aboutSection.style.setProperty('--about-fade-top', `${portrait.top - section.top + portrait.height * 583 / 906}px`);
     aboutSection.style.setProperty('--about-fade-height', `${portrait.height * 441 / 906}px`);
   });
@@ -64,6 +65,20 @@ window.addEventListener('resize', updateAboutFade, {passive:true});
 window.addEventListener('load', updateAboutFade, {once:true});
 updateAboutFade();
 
+// Scale both contact layers together, preserving the Figma aspect ratios and offset.
+const contactSection = document.querySelector('.contact');
+function updateContactBackground() {
+  if (window.matchMedia('(min-width:1024px)').matches) return;
+  const contentHeight = contactSection.querySelector('.section-content').getBoundingClientRect().height;
+  const bottomPadding = parseFloat(getComputedStyle(contactSection).paddingBottom);
+  const scale = Math.max(contactSection.clientWidth / 2000, (contentHeight + bottomPadding + 20) / (723 - 150));
+  contactSection.style.setProperty('--contact-background-width', `${scale * 2000}px`);
+  contactSection.style.setProperty('--contact-padding-top', `${scale * 150 + 20}px`);
+}
+new ResizeObserver(updateContactBackground).observe(contactSection);
+window.addEventListener('resize', updateContactBackground, {passive:true});
+updateContactBackground();
+
 const reviews = document.querySelector('.reviews');
 const cards = [...document.querySelectorAll('.review-card')];
 const dots = [...document.querySelectorAll('.review-dot')];
@@ -75,6 +90,19 @@ let currentReview = 4;
 let requestedReview = null;
 let drag = null;
 let suppressReviewClick = false;
+
+function updateReviewHeight() {
+  if (window.matchMedia('(min-width:1024px)').matches) {
+    reviews.style.removeProperty('--review-height');
+    return;
+  }
+  const left = reviews.scrollLeft;
+  const right = left + reviews.clientWidth;
+  const visible = cards.filter(card => card.offsetLeft + card.offsetWidth > left + 1 && card.offsetLeft < right - 1);
+  const height = Math.max(0, ...visible.map(card => card.offsetHeight));
+  if (height) reviews.style.setProperty('--review-height', `${height + 24}px`);
+}
+reviews.addEventListener('scroll', updateReviewHeight, {passive:true});
 
 function showReviewState(index) {
   currentReview = index;
@@ -105,6 +133,8 @@ reviews.addEventListener('keydown', event => {
 });
 function markCurrentReview() {
   if (requestedReview !== null) return;
+  if (reviews.scrollLeft <= 1) { showReviewState(0); return; }
+  if (reviews.scrollWidth - reviews.clientWidth - reviews.scrollLeft <= 1) { showReviewState(cards.length - 1); return; }
   const center = reviews.scrollLeft + reviews.clientWidth / 2;
   let closest = 0;
   cards.forEach((card,index) => {
@@ -148,17 +178,19 @@ function sizeReviewEdges(initial = false) {
   const viewportWidth = reviews.parentElement.clientWidth;
   const compact = window.innerWidth < 600;
   const start = compact ? 20 : Math.max(0, (viewportWidth - cards[0].offsetWidth) / 2);
-  const end = compact ? 20 : Math.max(0, (viewportWidth - cards[cards.length - 1].offsetWidth) / 2);
+  const end = Math.max(compact ? 20 : 0, (viewportWidth - cards[cards.length - 1].offsetWidth) / 2);
   reviews.style.setProperty('--edge-start', `${start}px`);
   reviews.style.setProperty('--edge-end', `${end}px`);
   if (initial && window.matchMedia('(min-width:1024px)').matches) {
-    reviews.scrollTo({left:start + 1414 * document.documentElement.clientWidth / 1920, behavior:'instant'});
+    reviews.scrollTo({left:start + 878 * document.documentElement.clientWidth / 1920, behavior:'instant'});
   } else goToReview(initial ? 0 : currentReview, 'instant');
+  updateReviewHeight();
 }
 sizeReviewEdges(true);
-let firstReviewSize = true;
+let previousReviewWidth = reviews.clientWidth;
 new ResizeObserver(() => {
-  if (firstReviewSize) { firstReviewSize = false; return; }
+  if (previousReviewWidth === reviews.clientWidth) return;
+  previousReviewWidth = reviews.clientWidth;
   sizeReviewEdges();
 }).observe(reviews);
 markCurrentReview();

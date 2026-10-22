@@ -52,6 +52,7 @@ function updateAboutFade() {
     if (window.matchMedia('(min-width:1024px)').matches) return;
     const section = aboutSection.getBoundingClientRect();
     const portrait = aboutPortrait.getBoundingClientRect();
+    if (!portrait.height) return;
     aboutSection.style.setProperty('--about-fade-top', `${portrait.top - section.top + portrait.height * 583 / 906}px`);
     aboutSection.style.setProperty('--about-fade-height', `${portrait.height * 441 / 906}px`);
   });
@@ -63,4 +64,18 @@ document.fonts.ready.then(updateAboutFade);
 window.addEventListener('resize', updateAboutFade, {passive:true});
 window.addEventListener('load', updateAboutFade, {once:true});
 updateAboutFade();
+
+// Scale both contact layers together, preserving the Figma aspect ratios and offset.
+const contactSection = document.querySelector('.contact');
+function updateContactBackground() {
+  if (window.matchMedia('(min-width:1024px)').matches) return;
+  const contentHeight = contactSection.querySelector('.section-content').getBoundingClientRect().height;
+  const bottomPadding = parseFloat(getComputedStyle(contactSection).paddingBottom);
+  const scale = Math.max(contactSection.clientWidth / 2000, (contentHeight + bottomPadding + 20) / (723 - 150));
+  contactSection.style.setProperty('--contact-background-width', `${scale * 2000}px`);
+  contactSection.style.setProperty('--contact-padding-top', `${scale * 150 + 20}px`);
+}
+new ResizeObserver(updateContactBackground).observe(contactSection);
+window.addEventListener('resize', updateContactBackground, {passive:true});
+updateContactBackground();
 
