@@ -6,13 +6,12 @@ updateDesignUnit();
 window.addEventListener('resize', updateDesignUnit, {passive:true});
 
 // SVGs keep their original dimensions; only the containing layer is scaled.
-const vectorObserver = new ResizeObserver(entries => {
+const vectorObserver = watchElementSizes(document.querySelectorAll('.vector'), entries => {
   for (const {target,contentRect} of entries) {
     const originalWidth = Number(target.style.getPropertyValue('--vw'));
     target.style.setProperty('--scale', contentRect.width / originalWidth);
   }
 });
-document.querySelectorAll('.vector').forEach(element => vectorObserver.observe(element));
 
 const header = document.querySelector('.header');
 const menuButton = document.querySelector('.menu-toggle');
@@ -34,7 +33,7 @@ document.addEventListener('keydown', event => {
 document.addEventListener('click', event => {
   if (!header.contains(event.target)) closeMenu();
 });
-window.matchMedia('(min-width: 1024px)').addEventListener('change', closeMenu);
+onMediaChange(window.matchMedia('(min-width: 1024px)'), closeMenu);
 
 const faqItems = [...document.querySelectorAll('.faq-item')];
 faqItems.forEach(item => item.addEventListener('toggle', () => {
@@ -57,10 +56,8 @@ function updateAboutFade() {
     aboutSection.style.setProperty('--about-fade-height', `${portrait.height * 441 / 906}px`);
   });
 }
-const aboutLayoutObserver = new ResizeObserver(updateAboutFade);
-aboutLayoutObserver.observe(document.querySelector('.about-layout'));
-aboutLayoutObserver.observe(aboutPortrait);
-document.fonts.ready.then(updateAboutFade);
+const aboutLayoutObserver = watchElementSizes([document.querySelector('.about-layout'),aboutPortrait], updateAboutFade);
+afterLocalFonts(updateAboutFade);
 window.addEventListener('resize', updateAboutFade, {passive:true});
 window.addEventListener('load', updateAboutFade, {once:true});
 updateAboutFade();
@@ -75,7 +72,12 @@ function updateContactBackground() {
   contactSection.style.setProperty('--contact-background-width', `${scale * 2000}px`);
   contactSection.style.setProperty('--contact-padding-top', `${scale * 150 + 20}px`);
 }
-new ResizeObserver(updateContactBackground).observe(contactSection);
+watchElementSizes([contactSection], updateContactBackground);
 window.addEventListener('resize', updateContactBackground, {passive:true});
 updateContactBackground();
+
+if (!(window.CSS && CSS.supports && CSS.supports('aspect-ratio', '1 / 1'))) {
+  watchElementSizes(document.querySelectorAll('.vector,.review-card,.hero-art,.process-art,.about-art'), applyAspectFallbacks);
+  applyAspectFallbacks();
+}
 

@@ -14,7 +14,9 @@ Para visualizar, abra `outputs/site-joice/index.html` no navegador ou sirva essa
 - `work/layout-desktop.css`: estilos do modelo de 1920 unidades.
 - `work/layout-mobile.css` e `work/consolidar-layout.cjs`: layout de celular/tablet até 1023 px e geração do CSS final. `layout-mobile-original.css` guarda apenas as regras antigas.
 - `work/carrossel.js`: comportamento dos depoimentos. Manter sincronizado com a parte final de `outputs/site-joice/app.js`.
-- `work/app-base.js`: menu, dúvidas, escala dos vetores e posição responsiva do degradê. O gerador HTML reúne este arquivo e `work/carrossel.js` para gerar `app.js`.
+- `work/app-base.js`: menu, dúvidas, escala dos vetores e posição responsiva do degradê. O gerador HTML reúne `work/compatibilidade.js`, este arquivo e `work/carrossel.js` para gerar `app.js`.
+- `work/compatibilidade.js` e `work/compatibilidade.css`: proteções do tema claro e alternativas por recurso disponível no navegador. O gerador inclui esses arquivos, preservando o layout aprovado.
+- `work/testar-compatibilidade.cjs`: verifica alternativas das APIs e cria uma prévia QA local com recursos recentes desativados. A prévia não entra no Git nem na publicação.
 - `work/preparar-mobile.py`: gera versões WebP menores das fotos e texturas para celular, com Python e Pillow. Os originais permanecem disponíveis para computador.
 
 Para reconstruir HTML e CSS, execute na raiz do repositório, com Node.js instalado:

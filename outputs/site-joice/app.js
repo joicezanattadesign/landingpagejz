@@ -1,3 +1,64 @@
+// Feature-based fallbacks keep the same layout on older Safari and Android WebViews.
+function watchElementSizes(elements, callback) {
+  const targets = Array.from(elements);
+  if (typeof ResizeObserver === 'function') {
+    const observer = new ResizeObserver(callback);
+    targets.forEach(element => observer.observe(element));
+    return observer;
+  }
+  let frame = 0;
+  let disconnected = false;
+  const update = () => {
+    if (disconnected) return;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => callback(targets.map(target => ({target, contentRect:target.getBoundingClientRect()}))));
+  };
+  window.addEventListener('resize', update, {passive:true});
+  window.addEventListener('load', update, {once:true});
+  afterLocalFonts(update);
+  update();
+  return {disconnect() {
+    disconnected = true;
+    cancelAnimationFrame(frame);
+    window.removeEventListener('resize', update);
+    window.removeEventListener('load', update);
+  }};
+}
+
+function onMediaChange(query, callback) {
+  if (typeof query.addEventListener === 'function') query.addEventListener('change', callback);
+  else if (typeof query.addListener === 'function') query.addListener(callback);
+}
+
+function afterLocalFonts(callback) {
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(callback);
+  else callback();
+}
+
+function scrollReviewElement(element, left, behavior) {
+  if (typeof element.scrollTo === 'function') {
+    try { element.scrollTo({left, top:0, behavior}); return; } catch (_) { /* Older options API. */ }
+  }
+  element.scrollLeft = left;
+  element.scrollTop = 0;
+}
+
+function applyAspectFallbacks() {
+  if (window.CSS && CSS.supports && CSS.supports('aspect-ratio', '1 / 1')) return;
+  document.querySelectorAll('.vector,.review-card,.lightbox-print').forEach(element => {
+    const style = getComputedStyle(element);
+    const width = Number(style.getPropertyValue('--vw') || style.getPropertyValue('--rw'));
+    const height = Number(style.getPropertyValue('--vh') || style.getPropertyValue('--rh'));
+    if (width && height) element.style.height = `${element.getBoundingClientRect().width * height / width}px`;
+  });
+  const compact = window.matchMedia('(max-width:1023.98px)').matches;
+  [['.hero-art',736,914],['.process-art',793,1226],['.about-art',604,906]].forEach(([selector,width,height]) => {
+    const element = document.querySelector(selector);
+    if (compact) element.style.height = `${element.getBoundingClientRect().width * height / width}px`;
+    else element.style.removeProperty('height');
+  });
+}
+
 // The 1920 px design uses one shared unit throughout the whole page.
 function updateDesignUnit() {
   document.documentElement.style.setProperty('--design-unit', `${document.documentElement.clientWidth / 1920}px`);
@@ -6,13 +67,12 @@ updateDesignUnit();
 window.addEventListener('resize', updateDesignUnit, {passive:true});
 
 // SVGs keep their original dimensions; only the containing layer is scaled.
-const vectorObserver = new ResizeObserver(entries => {
+const vectorObserver = watchElementSizes(document.querySelectorAll('.vector'), entries => {
   for (const {target,contentRect} of entries) {
     const originalWidth = Number(target.style.getPropertyValue('--vw'));
     target.style.setProperty('--scale', contentRect.width / originalWidth);
   }
 });
-document.querySelectorAll('.vector').forEach(element => vectorObserver.observe(element));
 
 const header = document.querySelector('.header');
 const menuButton = document.querySelector('.menu-toggle');
@@ -34,7 +94,7 @@ document.addEventListener('keydown', event => {
 document.addEventListener('click', event => {
   if (!header.contains(event.target)) closeMenu();
 });
-window.matchMedia('(min-width: 1024px)').addEventListener('change', closeMenu);
+onMediaChange(window.matchMedia('(min-width: 1024px)'), closeMenu);
 
 const faqItems = [...document.querySelectorAll('.faq-item')];
 faqItems.forEach(item => item.addEventListener('toggle', () => {
@@ -57,10 +117,8 @@ function updateAboutFade() {
     aboutSection.style.setProperty('--about-fade-height', `${portrait.height * 441 / 906}px`);
   });
 }
-const aboutLayoutObserver = new ResizeObserver(updateAboutFade);
-aboutLayoutObserver.observe(document.querySelector('.about-layout'));
-aboutLayoutObserver.observe(aboutPortrait);
-document.fonts.ready.then(updateAboutFade);
+const aboutLayoutObserver = watchElementSizes([document.querySelector('.about-layout'),aboutPortrait], updateAboutFade);
+afterLocalFonts(updateAboutFade);
 window.addEventListener('resize', updateAboutFade, {passive:true});
 window.addEventListener('load', updateAboutFade, {once:true});
 updateAboutFade();
@@ -75,9 +133,14 @@ function updateContactBackground() {
   contactSection.style.setProperty('--contact-background-width', `${scale * 2000}px`);
   contactSection.style.setProperty('--contact-padding-top', `${scale * 150 + 20}px`);
 }
-new ResizeObserver(updateContactBackground).observe(contactSection);
+watchElementSizes([contactSection], updateContactBackground);
 window.addEventListener('resize', updateContactBackground, {passive:true});
 updateContactBackground();
+
+if (!(window.CSS && CSS.supports && CSS.supports('aspect-ratio', '1 / 1'))) {
+  watchElementSizes(document.querySelectorAll('.vector,.review-card,.hero-art,.process-art,.about-art'), applyAspectFallbacks);
+  applyAspectFallbacks();
+}
 
 const reviews = document.querySelector('.reviews');
 const cards = [...document.querySelectorAll('.review-card')];
@@ -91,6 +154,17 @@ let currentReview = 4;
 let requestedReview = null;
 let drag = null;
 let suppressReviewClick = false;
+let reviewSettleTimer = 0;
+
+function finishReviewScroll() {
+  clearTimeout(reviewSettleTimer);
+  requestedReview = null;
+  markCurrentReview();
+}
+function scheduleReviewScrollEnd() {
+  clearTimeout(reviewSettleTimer);
+  reviewSettleTimer = setTimeout(finishReviewScroll, 160);
+}
 
 function updateReviewHeight() {
   // The row scrolls horizontally; never retain a vertical offset after a resize or gesture.
@@ -116,14 +190,15 @@ function showReviewState(index) {
   reviewStatus.textContent = `Depoimento ${index + 1} de ${cards.length}`;
   reviewCount.textContent = `${String(index + 1).padStart(2,'0')} / ${String(cards.length).padStart(2,'0')}`;
 }
-function goToReview(index, behavior = reducedMotion.matches ? 'instant' : 'smooth') {
+function goToReview(index, behavior = reducedMotion.matches ? 'auto' : 'smooth') {
   const target = Math.max(0, Math.min(cards.length - 1, index));
   requestedReview = target;
   showReviewState(target);
   const left = cards[target].offsetLeft - (reviews.clientWidth - cards[target].offsetWidth) / 2;
-  reviews.scrollTo({left, behavior});
+  scrollReviewElement(reviews, left, behavior);
+  scheduleReviewScrollEnd();
 }
-reviewScrubber.addEventListener('input', () => goToReview(Number(reviewScrubber.value), 'instant'));
+reviewScrubber.addEventListener('input', () => goToReview(Number(reviewScrubber.value), 'auto'));
 previousReview.addEventListener('click', () => goToReview(currentReview - 1));
 nextReview.addEventListener('click', () => goToReview(currentReview + 1));
 reviews.addEventListener('keydown', event => {
@@ -145,9 +220,11 @@ function markCurrentReview() {
   showReviewState(closest);
 }
 reviews.addEventListener('scroll', markCurrentReview, {passive:true});
-reviews.addEventListener('scrollend', () => { requestedReview = null; markCurrentReview(); });
+reviews.addEventListener('scroll', scheduleReviewScrollEnd, {passive:true});
+reviews.addEventListener('scrollend', finishReviewScroll);
 // Touch and trackpad use native scrolling; mouse dragging adds the desktop gesture.
 reviews.addEventListener('pointerdown', event => {
+  clearTimeout(reviewSettleTimer);
   requestedReview = null;
   suppressReviewClick = false;
   if (event.pointerType !== 'mouse' || event.button !== 0) return;
@@ -155,8 +232,9 @@ reviews.addEventListener('pointerdown', event => {
 });
 reviews.addEventListener('pointermove', event => {
   if (!drag || event.pointerId !== drag.id) return;
-  if (Math.abs(event.clientX - drag.x) <= 6 && !reviews.hasPointerCapture(event.pointerId)) return;
-  if (!reviews.hasPointerCapture(event.pointerId)) reviews.setPointerCapture(event.pointerId);
+  const captured = typeof reviews.hasPointerCapture === 'function' && reviews.hasPointerCapture(event.pointerId);
+  if (Math.abs(event.clientX - drag.x) <= 6 && !captured) return;
+  if (!captured && typeof reviews.setPointerCapture === 'function') reviews.setPointerCapture(event.pointerId);
   reviews.classList.add('is-dragging');
   reviews.scrollLeft = drag.left - (event.clientX - drag.x);
 });
@@ -167,12 +245,13 @@ function finishReviewDrag(event) {
   if (moved) setTimeout(() => { suppressReviewClick = false; }, 0);
   drag = null;
   reviews.classList.remove('is-dragging');
-  if (reviews.hasPointerCapture(event.pointerId)) reviews.releasePointerCapture(event.pointerId);
+  if (typeof reviews.hasPointerCapture === 'function' && reviews.hasPointerCapture(event.pointerId)) reviews.releasePointerCapture(event.pointerId);
   markCurrentReview();
   if (moved) goToReview(currentReview);
 }
 reviews.addEventListener('pointerup', finishReviewDrag);
 reviews.addEventListener('pointercancel', finishReviewDrag);
+window.addEventListener('pointerup', finishReviewDrag);
 reviews.addEventListener('lostpointercapture', event => {
   if (drag && event.pointerId === drag.id) { drag = null; reviews.classList.remove('is-dragging'); }
 });
@@ -184,24 +263,40 @@ function sizeReviewEdges(initial = false) {
   reviews.style.setProperty('--edge-start', `${start}px`);
   reviews.style.setProperty('--edge-end', `${end}px`);
   if (initial && window.matchMedia('(min-width:1024px)').matches) {
-    reviews.scrollTo({left:start + 878 * document.documentElement.clientWidth / 1920, behavior:'instant'});
-  } else goToReview(initial ? 0 : currentReview, 'instant');
+    scrollReviewElement(reviews, start + 878 * document.documentElement.clientWidth / 1920, 'auto');
+  } else goToReview(initial ? 0 : currentReview, 'auto');
   updateReviewHeight();
 }
 sizeReviewEdges(true);
 let previousReviewWidth = reviews.clientWidth;
-new ResizeObserver(() => {
+watchElementSizes([reviews], () => {
   if (previousReviewWidth === reviews.clientWidth) return;
   previousReviewWidth = reviews.clientWidth;
   sizeReviewEdges();
-}).observe(reviews);
+});
 markCurrentReview();
 
 // Prints stay compact in the carousel and retain their exact crop when enlarged.
 const reviewLightbox = document.querySelector('.review-lightbox');
 const lightboxBody = reviewLightbox.querySelector('.review-lightbox-body');
 const lightboxTitle = reviewLightbox.querySelector('h2');
+const lightboxBackdrop = document.querySelector('.review-lightbox-backdrop');
+const lightboxClose = reviewLightbox.querySelector('.review-lightbox-close');
 let reviewOpener = null;
+function restoreReviewFocus() {
+  document.body.classList.remove('review-open');
+  lightboxBackdrop.hidden = true;
+  if (reviewOpener) {
+    try { reviewOpener.focus({preventScroll:true}); } catch (_) { reviewOpener.focus(); }
+  }
+}
+function closeReviewLightbox() {
+  if (typeof reviewLightbox.close === 'function') reviewLightbox.close();
+  else {
+    reviewLightbox.removeAttribute('open');
+    restoreReviewFocus();
+  }
+}
 reviews.addEventListener('click', event => {
   const button = event.target.closest('.review-enlarge');
   if (!button || suppressReviewClick) return;
@@ -217,15 +312,25 @@ reviews.addEventListener('click', event => {
   lightboxTitle.textContent = `Depoimento ${index + 1} de ${cards.length}`;
   reviewOpener = button;
   document.body.classList.add('review-open');
-  reviewLightbox.showModal();
+  if (typeof reviewLightbox.showModal === 'function') reviewLightbox.showModal();
+  else {
+    reviewLightbox.classList.add('dialog-fallback');
+    reviewLightbox.setAttribute('open', '');
+    lightboxBackdrop.hidden = false;
+    lightboxClose.focus();
+  }
+  applyAspectFallbacks();
 });
-reviewLightbox.querySelector('.review-lightbox-close').addEventListener('click', () => reviewLightbox.close());
+lightboxClose.addEventListener('click', closeReviewLightbox);
+lightboxBackdrop.addEventListener('click', closeReviewLightbox);
+document.addEventListener('keydown', event => {
+  if (!reviewLightbox.classList.contains('dialog-fallback') || !reviewLightbox.hasAttribute('open')) return;
+  if (event.key === 'Escape') { event.preventDefault(); closeReviewLightbox(); }
+  else if (event.key === 'Tab') { event.preventDefault(); lightboxClose.focus(); }
+});
 reviewLightbox.addEventListener('click', event => {
   if (event.target !== reviewLightbox) return;
   const bounds = reviewLightbox.getBoundingClientRect();
-  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) reviewLightbox.close();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeReviewLightbox();
 });
-reviewLightbox.addEventListener('close', () => {
-  document.body.classList.remove('review-open');
-  reviewOpener?.focus({preventScroll:true});
-});
+reviewLightbox.addEventListener('close', restoreReviewFocus);

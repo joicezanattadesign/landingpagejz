@@ -1,0 +1,24 @@
+/* Keep the authored light palette, including browsers that do not support "only". */
+:root,body { color-scheme:light; color-scheme:only light; }
+html { background-color:#fdfdfd; color:#302c1e; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body { background-color:#fdfdfd; color:#302c1e; }
+button,input,dialog { color-scheme:light; color-scheme:only light; }
+@media(prefers-color-scheme:dark) {
+  :root { --ink:#302c1e; --caramel:#955726; --sand:#c0bb9d; --paper:#fdfdfd; --sage:#f0f5e8; color-scheme:light; color-scheme:only light; }
+  html,body { background-color:#fdfdfd; color:#302c1e; }
+}
+/* Older browsers without overflow:clip still contain the decorative bands. */
+@supports not (overflow:clip) {
+  body,main { overflow-x:hidden; }
+  .about,.contact { overflow:hidden; }
+}
+/* Native dialog is progressive: the same print is readable on older WebViews. */
+.review-lightbox:not([open]),.review-lightbox-backdrop[hidden] { display:none; }
+.review-lightbox-backdrop { position:fixed; top:0; right:0; bottom:0; left:0; z-index:90; background:#17160fba; }
+.review-lightbox.dialog-fallback[open] { display:block; z-index:91; top:50%; left:50%; right:auto; bottom:auto; transform:translate(-50%,-50%); margin:0; }
+@media(max-width:319.98px) {
+  .header { padding-left:10px; padding-right:10px; }
+  .brand { font-size:18px; gap:7px; }
+  .brand-symbol { width:24px; }
+  .menu-toggle { gap:5px; padding-left:4px; font-size:11px; }
+}

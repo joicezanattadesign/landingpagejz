@@ -10,6 +10,17 @@ let currentReview = 4;
 let requestedReview = null;
 let drag = null;
 let suppressReviewClick = false;
+let reviewSettleTimer = 0;
+
+function finishReviewScroll() {
+  clearTimeout(reviewSettleTimer);
+  requestedReview = null;
+  markCurrentReview();
+}
+function scheduleReviewScrollEnd() {
+  clearTimeout(reviewSettleTimer);
+  reviewSettleTimer = setTimeout(finishReviewScroll, 160);
+}
 
 function updateReviewHeight() {
   // The row scrolls horizontally; never retain a vertical offset after a resize or gesture.
@@ -35,14 +46,15 @@ function showReviewState(index) {
   reviewStatus.textContent = `Depoimento ${index + 1} de ${cards.length}`;
   reviewCount.textContent = `${String(index + 1).padStart(2,'0')} / ${String(cards.length).padStart(2,'0')}`;
 }
-function goToReview(index, behavior = reducedMotion.matches ? 'instant' : 'smooth') {
+function goToReview(index, behavior = reducedMotion.matches ? 'auto' : 'smooth') {
   const target = Math.max(0, Math.min(cards.length - 1, index));
   requestedReview = target;
   showReviewState(target);
   const left = cards[target].offsetLeft - (reviews.clientWidth - cards[target].offsetWidth) / 2;
-  reviews.scrollTo({left, behavior});
+  scrollReviewElement(reviews, left, behavior);
+  scheduleReviewScrollEnd();
 }
-reviewScrubber.addEventListener('input', () => goToReview(Number(reviewScrubber.value), 'instant'));
+reviewScrubber.addEventListener('input', () => goToReview(Number(reviewScrubber.value), 'auto'));
 previousReview.addEventListener('click', () => goToReview(currentReview - 1));
 nextReview.addEventListener('click', () => goToReview(currentReview + 1));
 reviews.addEventListener('keydown', event => {
@@ -64,9 +76,11 @@ function markCurrentReview() {
   showReviewState(closest);
 }
 reviews.addEventListener('scroll', markCurrentReview, {passive:true});
-reviews.addEventListener('scrollend', () => { requestedReview = null; markCurrentReview(); });
+reviews.addEventListener('scroll', scheduleReviewScrollEnd, {passive:true});
+reviews.addEventListener('scrollend', finishReviewScroll);
 // Touch and trackpad use native scrolling; mouse dragging adds the desktop gesture.
 reviews.addEventListener('pointerdown', event => {
+  clearTimeout(reviewSettleTimer);
   requestedReview = null;
   suppressReviewClick = false;
   if (event.pointerType !== 'mouse' || event.button !== 0) return;
@@ -74,8 +88,9 @@ reviews.addEventListener('pointerdown', event => {
 });
 reviews.addEventListener('pointermove', event => {
   if (!drag || event.pointerId !== drag.id) return;
-  if (Math.abs(event.clientX - drag.x) <= 6 && !reviews.hasPointerCapture(event.pointerId)) return;
-  if (!reviews.hasPointerCapture(event.pointerId)) reviews.setPointerCapture(event.pointerId);
+  const captured = typeof reviews.hasPointerCapture === 'function' && reviews.hasPointerCapture(event.pointerId);
+  if (Math.abs(event.clientX - drag.x) <= 6 && !captured) return;
+  if (!captured && typeof reviews.setPointerCapture === 'function') reviews.setPointerCapture(event.pointerId);
   reviews.classList.add('is-dragging');
   reviews.scrollLeft = drag.left - (event.clientX - drag.x);
 });
@@ -86,12 +101,13 @@ function finishReviewDrag(event) {
   if (moved) setTimeout(() => { suppressReviewClick = false; }, 0);
   drag = null;
   reviews.classList.remove('is-dragging');
-  if (reviews.hasPointerCapture(event.pointerId)) reviews.releasePointerCapture(event.pointerId);
+  if (typeof reviews.hasPointerCapture === 'function' && reviews.hasPointerCapture(event.pointerId)) reviews.releasePointerCapture(event.pointerId);
   markCurrentReview();
   if (moved) goToReview(currentReview);
 }
 reviews.addEventListener('pointerup', finishReviewDrag);
 reviews.addEventListener('pointercancel', finishReviewDrag);
+window.addEventListener('pointerup', finishReviewDrag);
 reviews.addEventListener('lostpointercapture', event => {
   if (drag && event.pointerId === drag.id) { drag = null; reviews.classList.remove('is-dragging'); }
 });
@@ -103,24 +119,40 @@ function sizeReviewEdges(initial = false) {
   reviews.style.setProperty('--edge-start', `${start}px`);
   reviews.style.setProperty('--edge-end', `${end}px`);
   if (initial && window.matchMedia('(min-width:1024px)').matches) {
-    reviews.scrollTo({left:start + 878 * document.documentElement.clientWidth / 1920, behavior:'instant'});
-  } else goToReview(initial ? 0 : currentReview, 'instant');
+    scrollReviewElement(reviews, start + 878 * document.documentElement.clientWidth / 1920, 'auto');
+  } else goToReview(initial ? 0 : currentReview, 'auto');
   updateReviewHeight();
 }
 sizeReviewEdges(true);
 let previousReviewWidth = reviews.clientWidth;
-new ResizeObserver(() => {
+watchElementSizes([reviews], () => {
   if (previousReviewWidth === reviews.clientWidth) return;
   previousReviewWidth = reviews.clientWidth;
   sizeReviewEdges();
-}).observe(reviews);
+});
 markCurrentReview();
 
 // Prints stay compact in the carousel and retain their exact crop when enlarged.
 const reviewLightbox = document.querySelector('.review-lightbox');
 const lightboxBody = reviewLightbox.querySelector('.review-lightbox-body');
 const lightboxTitle = reviewLightbox.querySelector('h2');
+const lightboxBackdrop = document.querySelector('.review-lightbox-backdrop');
+const lightboxClose = reviewLightbox.querySelector('.review-lightbox-close');
 let reviewOpener = null;
+function restoreReviewFocus() {
+  document.body.classList.remove('review-open');
+  lightboxBackdrop.hidden = true;
+  if (reviewOpener) {
+    try { reviewOpener.focus({preventScroll:true}); } catch (_) { reviewOpener.focus(); }
+  }
+}
+function closeReviewLightbox() {
+  if (typeof reviewLightbox.close === 'function') reviewLightbox.close();
+  else {
+    reviewLightbox.removeAttribute('open');
+    restoreReviewFocus();
+  }
+}
 reviews.addEventListener('click', event => {
   const button = event.target.closest('.review-enlarge');
   if (!button || suppressReviewClick) return;
@@ -136,15 +168,25 @@ reviews.addEventListener('click', event => {
   lightboxTitle.textContent = `Depoimento ${index + 1} de ${cards.length}`;
   reviewOpener = button;
   document.body.classList.add('review-open');
-  reviewLightbox.showModal();
+  if (typeof reviewLightbox.showModal === 'function') reviewLightbox.showModal();
+  else {
+    reviewLightbox.classList.add('dialog-fallback');
+    reviewLightbox.setAttribute('open', '');
+    lightboxBackdrop.hidden = false;
+    lightboxClose.focus();
+  }
+  applyAspectFallbacks();
 });
-reviewLightbox.querySelector('.review-lightbox-close').addEventListener('click', () => reviewLightbox.close());
+lightboxClose.addEventListener('click', closeReviewLightbox);
+lightboxBackdrop.addEventListener('click', closeReviewLightbox);
+document.addEventListener('keydown', event => {
+  if (!reviewLightbox.classList.contains('dialog-fallback') || !reviewLightbox.hasAttribute('open')) return;
+  if (event.key === 'Escape') { event.preventDefault(); closeReviewLightbox(); }
+  else if (event.key === 'Tab') { event.preventDefault(); lightboxClose.focus(); }
+});
 reviewLightbox.addEventListener('click', event => {
   if (event.target !== reviewLightbox) return;
   const bounds = reviewLightbox.getBoundingClientRect();
-  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) reviewLightbox.close();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeReviewLightbox();
 });
-reviewLightbox.addEventListener('close', () => {
-  document.body.classList.remove('review-open');
-  reviewOpener?.focus({preventScroll:true});
-});
+reviewLightbox.addEventListener('close', restoreReviewFocus);

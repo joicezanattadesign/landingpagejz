@@ -45,7 +45,7 @@ a,button,summary { -webkit-tap-highlight-color:transparent; touch-action:manipul
 .floating-icon { position:absolute; display:grid; place-items:center; width:calc(80.168 * var(--u)); height:calc(80.168 * var(--u)); border-radius:calc(23.125 * var(--u)); background:var(--ink); }
 .internet { top:calc(78 * var(--u)); left:calc(128 * var(--u)); } .internet img { width:calc(47 * var(--u)); height:calc(47 * var(--u)); }
 .shopping { top:calc(232 * var(--u)); right:0; } .shopping img { width:calc(49 * var(--u)); height:calc(49 * var(--u)); }
-.hero-ghost { position:absolute; top:calc(-36 * var(--u)); left:calc(50% - calc(1317 * var(--u))); z-index:-1; width:calc(894 * var(--u)); height:calc(1429 * var(--u)); overflow:hidden; opacity:.29; mix-blend-mode:luminosity; mask-image:linear-gradient(90deg,transparent 8%,black 36%,transparent 97%),linear-gradient(0deg,transparent 12%,black 50%); mask-composite:intersect; }
+.hero-ghost { position:absolute; top:calc(-36 * var(--u)); left:calc(50% - calc(1317 * var(--u))); z-index:-1; width:calc(894 * var(--u)); height:calc(1429 * var(--u)); overflow:hidden; opacity:.29; mix-blend-mode:luminosity; -webkit-mask-image:linear-gradient(90deg,transparent 8%,black 36%,transparent 97%),linear-gradient(0deg,transparent 12%,black 50%); mask-image:linear-gradient(90deg,transparent 8%,black 36%,transparent 97%),linear-gradient(0deg,transparent 12%,black 50%); -webkit-mask-composite:source-in; mask-composite:intersect; }
 .hero-ghost img { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
 .hero-signature { position:absolute; top:calc(803 * var(--u)); left:calc(50% - calc(655 * var(--u))); z-index:2; font-size:calc(296.177 * var(--u)); letter-spacing:-.04em; color:#fcf8f5; mix-blend-mode:overlay; }
 
@@ -382,6 +382,30 @@ footer strong { font-weight:800; }
   .service-card,.service-card.social{padding:18px}
   .service-heading h3,.service-card.social h3{font-size:19px}
   .contact-card strong,.contact-card>span:not(.contact-icon){font-size:16px}
+}
+/* Keep the authored light palette, including browsers that do not support "only". */
+:root,body { color-scheme:light; color-scheme:only light; }
+html { background-color:#fdfdfd; color:#302c1e; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body { background-color:#fdfdfd; color:#302c1e; }
+button,input,dialog { color-scheme:light; color-scheme:only light; }
+@media(prefers-color-scheme:dark) {
+  :root { --ink:#302c1e; --caramel:#955726; --sand:#c0bb9d; --paper:#fdfdfd; --sage:#f0f5e8; color-scheme:light; color-scheme:only light; }
+  html,body { background-color:#fdfdfd; color:#302c1e; }
+}
+/* Older browsers without overflow:clip still contain the decorative bands. */
+@supports not (overflow:clip) {
+  body,main { overflow-x:hidden; }
+  .about,.contact { overflow:hidden; }
+}
+/* Native dialog is progressive: the same print is readable on older WebViews. */
+.review-lightbox:not([open]),.review-lightbox-backdrop[hidden] { display:none; }
+.review-lightbox-backdrop { position:fixed; top:0; right:0; bottom:0; left:0; z-index:90; background:#17160fba; }
+.review-lightbox.dialog-fallback[open] { display:block; z-index:91; top:50%; left:50%; right:auto; bottom:auto; transform:translate(-50%,-50%); margin:0; }
+@media(max-width:319.98px) {
+  .header { padding-left:10px; padding-right:10px; }
+  .brand { font-size:18px; gap:7px; }
+  .brand-symbol { width:24px; }
+  .menu-toggle { gap:5px; padding-left:4px; font-size:11px; }
 }
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}

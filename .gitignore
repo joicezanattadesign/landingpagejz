@@ -7,6 +7,7 @@
 !/outputs/
 /outputs/*
 !/outputs/site-joice/
+/outputs/site-joice/qa-*.html
 !/work/
 /work/*
 !/work/montar-site.cjs
@@ -17,6 +18,9 @@
 !/work/consolidar-layout.cjs
 !/work/carrossel.js
 !/work/app-base.js
+!/work/compatibilidade.js
+!/work/compatibilidade.css
+!/work/testar-compatibilidade.cjs
 !/work/figma-assets-atualizados.json
 
 # Credenciais e dependências nunca devem ser enviadas.

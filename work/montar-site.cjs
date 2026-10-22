@@ -52,16 +52,19 @@ const html = `<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="only light">
   <meta name="supported-color-schemes" content="light">
-  <meta name="theme-color" content="#302c1e">
+  <meta name="darkreader-lock">
+  <meta name="theme-color" content="#fdfdfd">
+  <style id="tema-inicial">:root{color-scheme:light;color-scheme:only light;background:#fdfdfd;color:#302c1e}body{margin:0;background:#fdfdfd;color:#302c1e}</style>
   <title>Joice Zanatta — Sites, landing pages e design</title>
   <meta name="description" content="Sites, landing pages e design para redes sociais. Comunicação clara e uma presença digital coerente com o seu negócio. Conheça o trabalho de Joice Zanatta.">
   <link rel="icon" type="image/svg+xml" href="assets/f025f.svg">
   <link rel="preload" href="assets/fonts/Carattere-400.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Libre-Baskerville-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lato-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Manrope-500.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="fonts.css?v=5">
-  <link rel="stylesheet" href="style.css?v=17">
-  <script src="app.js?v=17" defer></script>
+  <link rel="stylesheet" href="style.css?v=18">
+  <script src="app.js?v=18" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -127,7 +130,7 @@ const html = `<!doctype html>
     </div>
     <p class="review-hint">Toque em um depoimento para ampliar.</p>
     <p class="review-status" aria-live="polite" aria-atomic="true"></p>
-    <dialog class="review-lightbox" aria-labelledby="review-lightbox-title"><div class="review-lightbox-toolbar"><h2 id="review-lightbox-title">Depoimento</h2><button class="review-lightbox-close" type="button" autofocus>Fechar <span aria-hidden="true">×</span></button></div><div class="review-lightbox-body"></div></dialog>
+    <div class="review-lightbox-backdrop" hidden></div><dialog class="review-lightbox" role="dialog" aria-modal="true" aria-labelledby="review-lightbox-title"><div class="review-lightbox-toolbar"><h2 id="review-lightbox-title">Depoimento</h2><button class="review-lightbox-close" type="button" autofocus>Fechar <span aria-hidden="true">×</span></button></div><div class="review-lightbox-body"></div></dialog>
   </section>
 
   <section class="services" id="servicos" aria-labelledby="services-title">
@@ -186,6 +189,6 @@ const html = `<!doctype html>
 const responsiveHtml = html.replace(/<img\b[^>]*src="assets\/(e2bc7|c4efa|48ee7|5c77c|222ae|7484e)\.png"[^>]*>/g,
   (img,asset)=>`<picture class="responsive-media"><source media="(max-width:1023.98px)" srcset="assets/mobile/${asset}.webp">${img}</picture>`);
 fs.writeFileSync(path.join(root,'index.html'),responsiveHtml);
-fs.writeFileSync(path.join(root,'app.js'),fs.readFileSync('work/app-base.js','utf8')+fs.readFileSync('work/carrossel.js','utf8'));
+fs.writeFileSync(path.join(root,'app.js'),fs.readFileSync('work/compatibilidade.js','utf8')+'\n'+fs.readFileSync('work/app-base.js','utf8')+fs.readFileSync('work/carrossel.js','utf8'));
 fs.writeFileSync('work/figma-vector-dimensions.json',JSON.stringify(dimensions,null,2));
 console.log('Página montada conforme a revisão atual do Figma.');
